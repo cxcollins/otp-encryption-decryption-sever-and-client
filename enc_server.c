@@ -55,6 +55,21 @@ void handle_client(int connectionSocket) {
     int plaintext_len;
     int charsRead;
     
+    // Receive client identifier for authentication
+    char client_id;
+    charsRead = recv(connectionSocket, &client_id, sizeof(client_id), 0);
+    if (charsRead < 0) {
+        fprintf(stderr, "SERVER: ERROR receiving client ID\n");
+        close(connectionSocket);
+        return;
+    }
+    
+    if (client_id != 'E') {
+        fprintf(stderr, "SERVER: Unauthorized client connection rejected\n");
+        close(connectionSocket);
+        return;
+    }
+    
     // Receive plaintext length
     charsRead = recv(connectionSocket, &plaintext_len, sizeof(plaintext_len), 0);
     if (charsRead < 0) {

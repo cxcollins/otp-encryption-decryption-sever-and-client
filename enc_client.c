@@ -103,6 +103,12 @@ int main(int argc, char *argv[]) {
         error("CLIENT: ERROR connecting");
     }
     
+    // Send client identifier for authentication (will be rejected by dec_server)
+    char client_id = 'E';
+    if (send(socketFD, &client_id, sizeof(client_id), 0) < 0) {
+        error("CLIENT: ERROR sending client ID");
+    }
+    
     // Send data to server, starting with encoded plaintext length
     int net_len = htonl(plaintext_len);
     if (send(socketFD, &net_len, sizeof(net_len), 0) < 0) {
